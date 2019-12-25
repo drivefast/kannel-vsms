@@ -1,0 +1,14 @@
+#!/bin/bash
+
+openssl ecparam -name secp384r1 -genkey -outform PEM -noout -out /tmp/$1_private-key.pem
+openssl pkcs8 -topk8 -nocrypt -in /tmp/$1_private-key.pem -outform DER -out /tmp/$1_private-key-pkcs8.der
+openssl ec -in /tmp/$1_private-key.pem -pubout -outform DER -out /tmp/$1_public-key.der
+
+base64 -w0 /tmp/$1_private-key-pkcs8.der
+echo
+base64 -w0 /tmp/$1_public-key.der
+
+rm /tmp/$1_private-key.pem
+rm /tmp/$1_private-key-pkcs8.der
+rm /tmp/$1_public-key.der
+

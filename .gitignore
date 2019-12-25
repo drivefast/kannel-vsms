@@ -1,0 +1,6 @@
+*.pyc
+*.swp
+credentials.json
+agents
+__pycache__
+
