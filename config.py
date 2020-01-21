@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import sys
 import syslog
 import os
@@ -22,7 +21,7 @@ KANNEL_URL = "http://localhost:13131/cgi-bin/sendsms"
 
 # access to the vSMS API requires either an API key, or a file containing 
 # credentials for a Google service account (only define one method)
-#VSMS_AUTH_APIKEY = "AIzaSyAaTU0247G8TYBjyOGCRtBR4La7uvyPjqU"
+#VSMS_AUTH_APIKEY = "YOUR_API_KEY_HERE"
 VSMS_AUTH_SERVICEACCOUNT = json.loads(open(
     APP_DIR + "/credentials.json"
 ).read())
@@ -41,11 +40,8 @@ AGENT_DATA_AUTH = ("agent", "zzyzx")
 # lot of agents, and you fetch the agent data via http)
 CACHE_AGENT_DATA = True
 
-
 # propagate a request for an SMS, even though a vSMS hash could not be posted
-# (this is the system default - may be overritten by agent settings)
-#SEND_UNVERIFIED = True
-SEND_UNVERIFIED = False
+SEND_UNVERIFIED = True
 
 
 
@@ -63,6 +59,7 @@ def load_config():
 
 LOG_IDENT = "vsms_kannel"
 LOG_FACILITY = syslog.LOG_LOCAL6
+LOG_LEVEL = "WARNING"
 
 class Logger:
     def __init__(self, ident=None, facility=None):
@@ -73,14 +70,19 @@ class Logger:
             facility=self.facility
         )
     def debug(self, message):
+        if LOG_LEVEL in [ "DEBUG", "INFO", "WARNING", "ERROR", "ALARM" ]: return
         syslog.syslog(syslog.LOG_DEBUG, "[DEBUG] " + str(message))
     def info(self, message):
+        if LOG_LEVEL in [ "INFO", "WARNING", "ERROR", "ALARM" ]: return
         syslog.syslog(syslog.LOG_INFO, "[INFO] " + str(message))
     def warning(self, message):
+        if LOG_LEVEL in [ "WARNING", "ERROR", "ALARM" ]: return
         syslog.syslog(syslog.LOG_WARNING, "[WARNING] " + str(message))
     def error(self, message):
+        if LOG_LEVEL in [ "ERROR", "ALARM" ]: return
         syslog.syslog(syslog.LOG_ERR, "[ERROR] " + str(message))
     def alarm(self, message):
+        if LOG_LEVEL in [ "ALARM" ]: return
         syslog.syslog(syslog.LOG_ALERT, "[ALARM] " + str(message))
 
 log = Logger(LOG_IDENT or "", facility=(LOG_FACILITY or syslog.LOG_LOCAL6))

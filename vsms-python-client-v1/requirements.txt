@@ -1,5 +1,0 @@
-httplib2==0.10.3
-urlextract
-requests
-cryptography
-pyjwt

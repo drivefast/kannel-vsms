@@ -2,5 +2,6 @@
 *.swp
 credentials.json
 agents
+vsms-python-client-v1
 __pycache__
 
