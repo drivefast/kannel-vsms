@@ -202,7 +202,7 @@ def vsms_post_message_hash(orig_num, dest_num, msg_string):
             VerifiedSmsServiceClient(api_key=VSMS_AUTH_APIKEY) \
                 if VSMS_AUTH_APIKEY is not None else \
             VerifiedSmsServiceClient(service_account_as_json=VSMS_AUTH_SERVICEACCOUNT)
-        if DEBUG_MODE:
+        if VSMS_DEBUG_MODE:
             log.debug("[{}] key on vSMS server: '{}' key on local server: '{}'"
                 .format(agent_id, vsms_client.get_agent_public_key(agent_id), agent['vsms_keys']['public'])
             )
@@ -210,7 +210,7 @@ def vsms_post_message_hash(orig_num, dest_num, msg_string):
             agent_id, 
             { "+" + dest_num.replace("+", ""): msg_string },
             base64.b64decode(agent['vsms_keys']['private']),
-            debug_mode=DEBUG_MODE
+            debug_mode=VSMS_DEBUG_MODE
         )
         log.info("[{}] {} -> {} vSMS hash posted; server says: '{}'"
             .format(agent_id, orig_num, dest_num, vsms_rp)

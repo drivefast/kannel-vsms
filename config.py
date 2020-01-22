@@ -7,8 +7,6 @@ import json
 # quick ref to the directory where the application is installed
 APP_DIR = os.path.dirname(os.path.realpath(__file__))
 
-DEBUG_MODE = True
-
 # if running in standalone mode, these are the parameters of the web server 
 # where the kannel proxy app listens to (in production mode, they would be
 # ineffective, as they are part of the external web server configuration)
@@ -33,17 +31,19 @@ AGENT_DATA = "file://" + APP_DIR + "/agents/"
 # GET and POST capabilities
 #AGENT_DATA = "https://api.example.com/vsms_agents"
 # you may need authentication for the agent service
-AGENT_DATA_AUTH = ("agent", "zzyzx")
+#AGENT_DATA_AUTH = ("agent", "zzyzx")
 # typically, the kannel proxy app loads (caches) all the agent info into the 
 # application memory; however, setting this to `False` will force a query to 
 # the agent data storage on every SMS request (only recommended if you have a 
 # lot of agents, and you fetch the agent data via http)
 CACHE_AGENT_DATA = True
 
-# propagate a request for an SMS, even though a vSMS hash could not be posted
-SEND_UNVERIFIED = True
+# propagate a request for an SMS, even if a vSMS hash could not be posted
+SEND_UNVERIFIED = False
 
-
+# this forces a debug mode on the vSMS library; do not leave it on in prod, 
+# as the response times increase dramatically
+VSMS_DEBUG_MODE = False
 
 ###############    no more user settings below this point   ################
 
@@ -70,20 +70,20 @@ class Logger:
             facility=self.facility
         )
     def debug(self, message):
-        if LOG_LEVEL in [ "DEBUG", "INFO", "WARNING", "ERROR", "ALARM" ]: return
-        syslog.syslog(syslog.LOG_DEBUG, "[DEBUG] " + str(message))
+        if LOG_LEVEL in [ "DEBUG", "INFO", "WARNING", "ERROR", "ALARM" ]:
+            syslog.syslog(syslog.LOG_DEBUG, "[DEBUG] " + str(message))
     def info(self, message):
-        if LOG_LEVEL in [ "INFO", "WARNING", "ERROR", "ALARM" ]: return
-        syslog.syslog(syslog.LOG_INFO, "[INFO] " + str(message))
+        if LOG_LEVEL in [ "INFO", "WARNING", "ERROR", "ALARM" ]:
+            syslog.syslog(syslog.LOG_INFO, "[INFO] " + str(message))
     def warning(self, message):
-        if LOG_LEVEL in [ "WARNING", "ERROR", "ALARM" ]: return
-        syslog.syslog(syslog.LOG_WARNING, "[WARNING] " + str(message))
+        if LOG_LEVEL in [ "WARNING", "ERROR", "ALARM" ]:
+            syslog.syslog(syslog.LOG_WARNING, "[WARNING] " + str(message))
     def error(self, message):
-        if LOG_LEVEL in [ "ERROR", "ALARM" ]: return
-        syslog.syslog(syslog.LOG_ERR, "[ERROR] " + str(message))
+        if LOG_LEVEL in [ "ERROR", "ALARM" ]:
+            syslog.syslog(syslog.LOG_ERR, "[ERROR] " + str(message))
     def alarm(self, message):
-        if LOG_LEVEL in [ "ALARM" ]: return
-        syslog.syslog(syslog.LOG_ALERT, "[ALARM] " + str(message))
+        if LOG_LEVEL in [ "ALARM" ]:
+            syslog.syslog(syslog.LOG_ALERT, "[ALARM] " + str(message))
 
 log = Logger(LOG_IDENT or "", facility=(LOG_FACILITY or syslog.LOG_LOCAL6))
 log.warning("Logger started")
